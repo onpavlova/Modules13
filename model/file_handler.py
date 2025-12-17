@@ -27,6 +27,8 @@ class FileHandler:
             raise FileOperationError(f"Файл не найден", file_path) from e
         except PermissionError as e:
             raise FileOperationError(f"Нет доступа к файлу", file_path) from e
+        except UnicodeDecodeError as e:
+            raise FileOperationError(f"Ошибка кодировки файла. Используйте UTF-8.", file_path) from e
         except Exception as e:
             raise FileOperationError(f"Ошибка при чтении файла", file_path) from e
 
@@ -45,3 +47,16 @@ class FileHandler:
             raise FileOperationError(f"Нет доступа для записи в файл", file_path) from e
         except Exception as e:
             raise FileOperationError(f"Ошибка при сохранении файла", file_path) from e
+
+    def file_exists(self, file_path: str) -> bool:
+        """Проверка существования файла"""
+        return os.path.exists(file_path)
+
+    def is_writable(self, file_path: str) -> bool:
+        """Проверка возможности записи в файл"""
+        try:
+            # Для нового файла проверяем доступность директории
+            directory = os.path.dirname(file_path) or '.'
+            return os.access(directory, os.W_OK)
+        except Exception:
+            return False

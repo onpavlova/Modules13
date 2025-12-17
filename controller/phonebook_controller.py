@@ -94,11 +94,6 @@ class PhoneBookController:
 
     def _add_contact(self) -> None:
         """Добавление нового контакта"""
-        if not self.phone_book.is_open and not self._current_file_path:
-            # Позволяем добавлять контакты даже если файл не открыт
-            # но тогда нужно указать путь при первом сохранении
-            self.view.show_message("Примечание: файл не открыт. Укажите путь при сохранении.")
-
         try:
             contact_data = self.view.get_multiple_input(text.input_new_contact)
             contact = Contact.from_list(contact_data)
